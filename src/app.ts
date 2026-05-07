@@ -3,15 +3,26 @@ import helmet from 'helmet';
 import cors from 'cors';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
+import { toNodeHandler } from 'better-auth/node';
 import { requestLogger } from './middleware/requestLogger';
 import { errorHandler } from './middleware/errorHandler';
 import healthRouter from './routes/health';
+import { auth } from './auth';
+import { config } from './config';
 
 const app: express.Application = express();
 
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    origin: config.trustedOrigins,
+    credentials: true,
+  }),
+);
 app.use(compression());
+
+// Auth handler must be registered before express.json() — Better Auth parses its own body
+app.all('/api/auth/*', toNodeHandler(auth));
 
 app.use(
   rateLimit({
