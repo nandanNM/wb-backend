@@ -1,0 +1,12 @@
+node_modules
+dist
+logs
+.env
+*.env.local
+.git
+.gitignore
+.claude
+eslint.config.mjs
+.prettierrc
+.prettierignore
+*.md
