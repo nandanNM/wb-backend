@@ -1,6 +1,14 @@
-import { pgTable, serial, text, integer, boolean, timestamp, unique, index } from 'drizzle-orm/pg-core';
+import { pgTable, pgEnum, serial, text, integer, boolean, timestamp, unique, index } from 'drizzle-orm/pg-core';
 import { user } from './auth';
 import { classes, subjects } from './academic';
+
+export const examBoardEnum = pgEnum('exam_board', [
+  'wbbse',   // West Bengal Board of Secondary Education (Class 9–10)
+  'wbchse',  // West Bengal Council of Higher Secondary Education (Class 11–12)
+  'cbse',    // Central Board of Secondary Education
+  'icse',    // Indian Certificate of Secondary Education
+  'others',
+]);
 
 export const studentProfiles = pgTable('student_profiles', {
   userId: text('user_id')
@@ -8,6 +16,7 @@ export const studentProfiles = pgTable('student_profiles', {
     .references(() => user.id, { onDelete: 'cascade' }),
   phone: text('phone').unique(),
   classId: integer('class_id').references(() => classes.id, { onDelete: 'set null' }),
+  examBoard: examBoardEnum('exam_board'),
   referralCode: text('referral_code').notNull().unique(),
   referredBy: text('referred_by').references(() => user.id, { onDelete: 'set null' }),
   onboardingCompleted: boolean('onboarding_completed').default(false).notNull(),

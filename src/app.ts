@@ -7,6 +7,7 @@ import { toNodeHandler } from 'better-auth/node';
 import { requestLogger } from './middleware/requestLogger';
 import { errorHandler } from './middleware/errorHandler';
 import healthRouter from './routes/health';
+import apiRouter from './routes';
 import { auth } from './auth';
 import { config } from './config';
 
@@ -38,6 +39,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
 
 app.use('/api/v1', healthRouter);
+app.use('/api/v1', apiRouter);
 
 app.use((_req, res) => {
   res.status(404).json({ error: 'Not Found' });
