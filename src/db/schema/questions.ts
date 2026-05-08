@@ -3,7 +3,7 @@ import {
   timestamp, index, unique,
 } from 'drizzle-orm/pg-core';
 import { chapters } from './academic';
-import { languageEnum, difficultyEnum } from './enums';
+import { languageEnum, difficultyEnum, questionStatusEnum } from './enums';
 
 export const questionTypeEnum = pgEnum('question_type', ['mcq']);
 
@@ -17,7 +17,10 @@ export const questions = pgTable(
     type: questionTypeEnum('type').default('mcq').notNull(),
     difficulty: difficultyEnum('difficulty').default('medium').notNull(),
     points: integer('points').default(10).notNull(),
-    imageUrl: text('image_url'),           // for future image-based questions
+    status: questionStatusEnum('status').default('draft').notNull(),
+    category: text('category'),
+    tags: text('tags').array().notNull().default([]),
+    imageUrl: text('image_url'),
     isActive: boolean('is_active').default(true).notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -25,10 +28,11 @@ export const questions = pgTable(
   (t) => [
     index('questions_chapter_idx').on(t.chapterId),
     index('questions_difficulty_idx').on(t.difficulty),
+    index('questions_status_idx').on(t.status),
+    index('questions_category_idx').on(t.category),
   ],
 );
 
-// Stores the question text per language — supports adding more languages later
 export const questionTranslations = pgTable(
   'question_translations',
   {
