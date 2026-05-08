@@ -4,6 +4,7 @@ import noteRouter from './note.routes';
 import userRouter from './user.routes';
 import referralRouter from './referral.routes';
 import adminQuestionRouter from './admin/question.routes';
+import adminTestRouter from './admin/test.routes';
 
 const apiRouter: Router = Router();
 
@@ -14,5 +15,6 @@ apiRouter.use('/referrals', referralRouter);
 
 // Admin routes — all protected by requireAdmin inside their respective routers
 apiRouter.use('/admin/questions', adminQuestionRouter);
+apiRouter.use('/admin/tests', adminTestRouter);
 
 export default apiRouter;
