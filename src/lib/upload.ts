@@ -35,3 +35,15 @@ export const csvUpload = multer({
     }
   },
 });
+
+export const pdfUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50 MB max
+  fileFilter(_req, file, cb) {
+    if (file.mimetype === 'application/pdf' || file.originalname.endsWith('.pdf')) {
+      cb(null, true);
+    } else {
+      cb(new AppError(400, 'Only PDF files are accepted'));
+    }
+  },
+});
